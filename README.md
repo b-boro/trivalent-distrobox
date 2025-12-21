@@ -21,10 +21,12 @@ distrobox-export --app trivalent
 ```
 
 ## Notes
-TODO hardened_malloc, ld preload, filter list copr
-
-Maybe the base image could be ghcr.io/secureblue/securecore-main-hardened.
+Maybe the base image could be `ghcr.io/secureblue/securecore-main-hardened`.
 Didn't work immediately when I tried it.
+
+Once https://github.com/ublue-os/toolboxes/issues/521 is resolved, this should
+be able to use `ghcr.io/ublue-os/fedora-toolbox` as a base and remove all the
+copied distrobox setup.
 
 ## KeepassXC support
 See https://github.com/keepassxreboot/keepassxc/issues/12390#issuecomment-3192985383

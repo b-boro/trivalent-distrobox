@@ -40,7 +40,8 @@ RUN dnf install -y \
 # Add Trivalent
 RUN dnf config-manager addrepo --from-repofile=/tmp/secureblue.repo && \
     dnf copr enable -y secureblue/hardened_malloc && \
-    dnf install -y trivalent hardened_malloc && \
+    dnf copr enable -y secureblue/trivalent && \
+    dnf install -y trivalent trivalent-subresource-filter hardened_malloc  && \
     dnf clean all
 
 RUN echo 'libhardened_malloc.so' > /etc/ld.so.preload 
