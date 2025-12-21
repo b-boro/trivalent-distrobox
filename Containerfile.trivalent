@@ -35,9 +35,15 @@ RUN dnf install -y \
     intel-media-driver && \
     dnf swap -y mesa-va-drivers mesa-va-drivers-freeworld && \
     dnf swap -y mesa-vdpau-drivers mesa-vdpau-drivers-freeworld && \
-    dnf config-manager addrepo --from-repofile=/tmp/secureblue.repo && \
-    dnf install -y trivalent && \
     dnf clean all
+
+# Add Trivalent
+RUN dnf config-manager addrepo --from-repofile=/tmp/secureblue.repo && \
+    dnf copr enable -y secureblue/hardened_malloc && \
+    dnf install -y trivalent hardened_malloc && \
+    dnf clean all
+
+RUN echo 'libhardened_malloc.so' > /etc/ld.so.preload 
 
 # Cleanup
 RUN rm -rf /tmp/*
