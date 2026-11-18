@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-toolbox:43 AS fedora-toolbox
+FROM registry.fedoraproject.org/fedora-toolbox:45 AS fedora-toolbox
 
 LABEL com.github.containers.toolbox="true" \
       usage="This image is meant to be used with the toolbox or distrobox command" \
@@ -13,8 +13,8 @@ RUN dnf -y upgrade && \
 
 # Set up dependencies
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/distrobox && \
-    cp /tmp/distrobox/distrobox-host-exec /usr/bin/distrobox-host-exec && \
-    wget https://github.com/1player/host-spawn/releases/download/$(cat /tmp/distrobox/distrobox-host-exec | grep host_spawn_version= | cut -d "\"" -f 2)/host-spawn-$(uname -m) -O /usr/bin/host-spawn && \
+    cp /tmp/distrobox/internal/inside-distrobox/assets/distrobox-host-exec /usr/bin/distrobox-host-exec && \
+    wget https://github.com/1player/host-spawn/releases/download/$(cat /usr/bin/distrobox-host-exec | grep host_spawn_version= | cut -d "\"" -f 2)/host-spawn-$(uname -m) -O /usr/bin/host-spawn && \
     chmod +x /usr/bin/host-spawn && \
     rm -drf /tmp/distrobox && \
     dnf install -y 'dnf-command(copr)' && \
@@ -34,17 +34,17 @@ RUN dnf install -y \
     dnf install -y \
     intel-media-driver && \
     dnf swap -y mesa-va-drivers mesa-va-drivers-freeworld && \
-    dnf swap -y mesa-vdpau-drivers mesa-vdpau-drivers-freeworld && \
+    dnf swap -y mesa-vulkan-drivers mesa-vulkan-drivers-freeworld && \
     dnf clean all
 
 # Add Trivalent
 RUN dnf config-manager addrepo --from-repofile=/tmp/secureblue.repo && \
-    dnf copr enable -y secureblue/hardened_malloc && \
+    # dnf copr enable -y secureblue/hardened_malloc && \
     dnf copr enable -y secureblue/trivalent && \
-    dnf install -y trivalent trivalent-subresource-filter hardened_malloc  && \
+    dnf install -y trivalent  && \
     dnf clean all
 
-RUN echo 'libhardened_malloc.so' > /etc/ld.so.preload 
+#RUN echo 'libhardened_malloc.so' > /etc/ld.so.preload 
 
 # Cleanup
 RUN rm -rf /tmp/*
